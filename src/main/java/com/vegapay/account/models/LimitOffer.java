@@ -20,16 +20,16 @@ public class LimitOffer {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private LimitType limitType;
+    public LimitType limitType;
 
     @Column(nullable = false)
-    private double newLimit;
+    public double newLimit;
 
     @Column(nullable = false)
-    private LocalDateTime offerActivationTime;
+    public LocalDateTime offerActivationTime;
 
     @Column(nullable = false)
-    private LocalDateTime offerExpiryTime;
+    public LocalDateTime offerExpiryTime;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -45,5 +45,41 @@ public class LimitOffer {
                 ", offerExpiryTime=" + offerExpiryTime +
                 ", status=" + status +
                 '}';
+    }
+
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
+    }
+
+    public void setLimitType(LimitType limitType) {
+        this.limitType = limitType;
+    }
+
+    public void setNewLimit(double newLimit) {
+        this.newLimit = newLimit;
+    }
+
+    public void setOfferActivationTime(LocalDateTime offerActivationTime) {
+        this.offerActivationTime = offerActivationTime;
+    }
+
+    public void setOfferExpiryTime(LocalDateTime offerExpiryTime) {
+        this.offerExpiryTime = offerExpiryTime;
+    }
+
+    public void setStatus(OfferStatus pending) {
+        this.status = pending;
+    }
+
+    public Long getAccountId() {
+        return this.accountId;
+    }
+
+    public LimitType getLimitType() {
+        return this.limitType;
+    }
+
+    public double getNewLimit() {
+        return this.newLimit;
     }
 }

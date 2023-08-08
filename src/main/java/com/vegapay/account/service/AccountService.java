@@ -1,7 +1,12 @@
 package com.vegapay.account.service;
 
+import com.vegapay.account.dto.CreateAccountRequest;
+import com.vegapay.account.models.Account;
+import com.vegapay.account.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 public class AccountService {
@@ -13,13 +18,26 @@ public class AccountService {
         this.accountRepository = accountRepository;
     }
 
-    public Account createAccount(Account account) {
-        // create account
+    public Account createAccount(CreateAccountRequest createAccountRequest) {
+        Long customerId = createAccountRequest.getCustomerId();
+        if (accountRepository.existsByCustomerId(customerId)) {
+            throw new IllegalArgumentException("Customer already has an account");
+        }
+
+        Account account = new Account();
+        account.setCustomerId(createAccountRequest.getCustomerId());
+        account.setAccountLimit(createAccountRequest.getAccountLimit());
+        account.setPerTransactionLimit(createAccountRequest.getPerTransactionLimit());
+        account.setLastAccountLimit(null);
+        account.setLastPerTransactionLimit(null);
+        account.setAccountLimitUpdateTime(LocalDateTime.now());
+        account.setPerTransactionLimitUpdateTime(LocalDateTime.now());
         return accountRepository.save(account);
     }
 
     public Account getAccount(Long accountId) {
-        //
         return accountRepository.findById(accountId).orElse(null);
     }
 }
+
+

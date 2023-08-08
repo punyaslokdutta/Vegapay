@@ -20,10 +20,10 @@ public class Account {
     @Column(nullable = false)
     private double perTransactionLimit;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private double lastAccountLimit;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private double lastPerTransactionLimit;
 
     @Column(nullable = false)
@@ -43,5 +43,41 @@ public class Account {
                 ", accountLimitUpdateTime=" + accountLimitUpdateTime +
                 ", perTransactionLimitUpdateTime=" + perTransactionLimitUpdateTime +
                 '}';
+    }
+
+    public double getAccountLimit() {
+        return accountLimit;
+    }
+
+    public double getPerTransactionLimit() {
+        return perTransactionLimit;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+
+    public void setAccountLimit(Double  accountLimit) {
+        this.accountLimit = accountLimit;
+    }
+
+    public void setPerTransactionLimit(Double perTransactionLimit) {
+        this.perTransactionLimit = perTransactionLimit;
+    }
+
+    public void setLastAccountLimit(Double accountLimit) {
+        this.lastAccountLimit = lastAccountLimit;
+    }
+
+    public void setLastPerTransactionLimit(Double lastPerTransactionLimit) {
+        this.lastPerTransactionLimit = lastPerTransactionLimit;
+    }
+
+    public void setAccountLimitUpdateTime(LocalDateTime now) {
+        this.accountLimitUpdateTime = now;
+    }
+
+    public void setPerTransactionLimitUpdateTime(LocalDateTime now) {
+        this.perTransactionLimitUpdateTime = now;
     }
 }

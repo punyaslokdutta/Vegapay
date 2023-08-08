@@ -6,8 +6,8 @@ import java.time.LocalDateTime;
 
 public class CreateLimitOfferRequest {
     private Long accountId;
-    private LimitType limitType;
-    private double newLimit;
-    private LocalDateTime offerActivationTime;
-    private LocalDateTime offerExpiryTime;
+    public LimitType limitType;
+    public double newLimit;
+    public LocalDateTime offerActivationTime;
+    public LocalDateTime offerExpiryTime;
 }

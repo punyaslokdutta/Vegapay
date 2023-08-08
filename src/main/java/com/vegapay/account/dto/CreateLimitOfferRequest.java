@@ -5,7 +5,7 @@ import com.vegapay.account.common.LimitType;
 import java.time.LocalDateTime;
 
 public class CreateLimitOfferRequest {
-    private Long accountId;
+    public int accountId;
     public LimitType limitType;
     public double newLimit;
     public LocalDateTime offerActivationTime;

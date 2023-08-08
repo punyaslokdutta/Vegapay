@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
     boolean existsByCustomerId(Long customerId);
+
+    Account findByAccountId(int accountId);
 }

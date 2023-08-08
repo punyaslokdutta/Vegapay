@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/limit-offers")
@@ -22,8 +23,8 @@ public class LimitOfferController {
     }
 
     @PostMapping
-    public ResponseEntity<LimitOffer> createLimitOffer(@RequestBody CreateLimitOfferRequest limitOffer, @PathVariable Long accountId) {
-        LimitOffer createdLimitOffer = limitOfferService.createLimitOffer(limitOffer, accountId);
+    public ResponseEntity<LimitOffer> createLimitOffer(@RequestBody CreateLimitOfferRequest limitOffer) {
+        LimitOffer createdLimitOffer = limitOfferService.createLimitOffer(limitOffer);
         return ResponseEntity.ok(createdLimitOffer);
     }
     @GetMapping("/active/{accountId}")
@@ -34,9 +35,11 @@ public class LimitOfferController {
 
     @PutMapping("/{limitOfferId}/status")
     public ResponseEntity<LimitOffer> updateLimitOfferStatus(
-            @PathVariable Long limitOfferId,
-            @RequestParam OfferStatus newStatus
+            @PathVariable int  limitOfferId,
+            @RequestBody Map<String, String> requestBody
     ) {
+        String newStatusStr = requestBody.get("status");
+        OfferStatus newStatus = OfferStatus.valueOf(newStatusStr);
         LimitOffer updatedLimitOffer = limitOfferService.updateLimitOfferStatus(limitOfferId, newStatus);
         if (updatedLimitOffer != null) {
             return ResponseEntity.ok(updatedLimitOffer);

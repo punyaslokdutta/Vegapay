@@ -30,13 +30,11 @@ public class LimitOfferService {
     }
 
     @Transactional
-    public LimitOffer createLimitOffer(CreateLimitOfferRequest createlimitOffer , Long accountId) {
-        Optional<Account> optionalAccount = accountRepository.findById(accountId);
-        if (optionalAccount.isEmpty()) {
+    public LimitOffer createLimitOffer(CreateLimitOfferRequest createlimitOffer) {
+        Account account = accountRepository.findByAccountId(createlimitOffer.accountId);
+        if (account == null ) {
             throw new IllegalArgumentException("Account not found");
         }
-
-        Account account = optionalAccount.get();
 
         if (createlimitOffer.limitType == LimitType.ACCOUNT_LIMIT && createlimitOffer.newLimit <= account.getAccountLimit()) {
             throw new IllegalArgumentException("New account limit must be greater than current account limit");
@@ -44,7 +42,7 @@ public class LimitOfferService {
             throw new IllegalArgumentException("New per transaction limit must be greater than current per transaction limit");
         }
         LimitOffer limitOffer = new LimitOffer();
-        limitOffer.setAccountId(accountId);
+        limitOffer.setAccountId(createlimitOffer.accountId);
         limitOffer.setLimitType(createlimitOffer.limitType);
         limitOffer.setNewLimit(createlimitOffer.newLimit);
         limitOffer.setOfferActivationTime(createlimitOffer.offerActivationTime);
@@ -54,11 +52,11 @@ public class LimitOfferService {
     }
 
     @Transactional
-    public LimitOffer updateLimitOfferStatus(Long limitOfferId, OfferStatus newStatus) {
-        LimitOffer limitOffer = limitOfferRepository.findById(limitOfferId).orElse(null);
+    public LimitOffer updateLimitOfferStatus(int limitOfferId, OfferStatus newStatus) {
+        LimitOffer limitOffer = limitOfferRepository.findByLimitOfferId(limitOfferId);
 
         if (limitOffer != null && newStatus == OfferStatus.ACCEPTED) {
-            Account account = accountRepository.findById(limitOffer.getAccountId()).orElse(null);
+            Account account = accountRepository.findByAccountId(limitOffer.getAccountId());
 
             if (account != null) {
                 double newAccountLimit = limitOffer.getLimitType() == LimitType.ACCOUNT_LIMIT ? limitOffer.getNewLimit() : account.getAccountLimit();

@@ -3,7 +3,7 @@ package com.vegapay.account.models;
 import com.vegapay.account.common.LimitType;
 import com.vegapay.account.common.OfferStatus;
 import jakarta.persistence.*;
-import org.springframework.data.annotation.Id;
+
 
 import java.time.LocalDateTime;
 
@@ -16,7 +16,7 @@ public class LimitOffer {
     private Long limitOfferId;
 
     @Column(nullable = false)
-    private Long accountId;
+    private int accountId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -47,7 +47,7 @@ public class LimitOffer {
                 '}';
     }
 
-    public void setAccountId(Long accountId) {
+    public void setAccountId(int accountId) {
         this.accountId = accountId;
     }
 
@@ -71,7 +71,7 @@ public class LimitOffer {
         this.status = pending;
     }
 
-    public Long getAccountId() {
+    public int getAccountId() {
         return this.accountId;
     }
 

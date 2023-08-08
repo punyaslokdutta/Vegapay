@@ -28,15 +28,15 @@ public class AccountService {
         account.setCustomerId(createAccountRequest.getCustomerId());
         account.setAccountLimit(createAccountRequest.getAccountLimit());
         account.setPerTransactionLimit(createAccountRequest.getPerTransactionLimit());
-        account.setLastAccountLimit(null);
-        account.setLastPerTransactionLimit(null);
+        account.setLastAccountLimit(0.0);
+        account.setLastPerTransactionLimit(0.0);
         account.setAccountLimitUpdateTime(LocalDateTime.now());
         account.setPerTransactionLimitUpdateTime(LocalDateTime.now());
         return accountRepository.save(account);
     }
 
-    public Account getAccount(Long accountId) {
-        return accountRepository.findById(accountId).orElse(null);
+    public Account getAccount(int accountId) {
+        return accountRepository.findByAccountId(accountId);
     }
 }
 

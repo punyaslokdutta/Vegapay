@@ -1,23 +1,58 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
 
     <changeSet id="1" author="Punyaslok">
         <createTable tableName="account">
-            <column name="account_id" type="BIGINT" autoIncrement="true">
+            <column name="account_id" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="customer_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_limit" type="DOUBLE PRECISION">
+                <constraints nullable="false"/>
+            </column>
+            <column name="per_transaction_limit" type="DOUBLE PRECISION">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="account_limit_update_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="per_transaction_limit_update_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
 
     <changeSet id="2" author="Punyaslok">
         <createTable tableName="limit_offer">
-            <column name="limit_offer_id" type="BIGINT" autoIncrement="true">
+            <column name="limit_offer_id" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="account_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Add other columns -->
+            <column name="limit_type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="new_limit" type="DOUBLE PRECISION">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Add other columns -->
+            <column name="offer_activation_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="offer_expiry_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(50)">
+                <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
+
 </databaseChangeLog>

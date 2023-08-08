@@ -5,6 +5,7 @@ import com.vegapay.account.models.Account;
 import com.vegapay.account.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +19,7 @@ public class AccountService {
         this.accountRepository = accountRepository;
     }
 
+    @Transactional
     public Account createAccount(CreateAccountRequest createAccountRequest) {
         Long customerId = createAccountRequest.getCustomerId();
         if (accountRepository.existsByCustomerId(customerId)) {

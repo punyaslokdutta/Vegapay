@@ -16,9 +16,13 @@ public class AccountController {
         this.accountService = accountService;
     }
     @PostMapping
-    public ResponseEntity<Account> createAccount(@RequestBody CreateAccountRequest createAccountRequest) {
-        Account createdAccount = accountService.createAccount(createAccountRequest);
-        return ResponseEntity.ok(createdAccount);
+    public ResponseEntity<?> createAccount(@RequestBody CreateAccountRequest createAccountRequest) {
+        try {
+            Account createdAccount = accountService.createAccount(createAccountRequest);
+            return ResponseEntity.ok(createdAccount);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
     }
 
     @GetMapping("/{accountId}")

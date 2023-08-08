@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class LimitOfferService {
@@ -30,23 +29,31 @@ public class LimitOfferService {
     }
 
     @Transactional
-    public LimitOffer createLimitOffer(CreateLimitOfferRequest createlimitOffer) {
-        Account account = accountRepository.findByAccountId(createlimitOffer.accountId);
+    public LimitOffer createLimitOffer(CreateLimitOfferRequest createLimitOffer) {
+        Account account = accountRepository.findByAccountId(createLimitOffer.accountId);
         if (account == null ) {
             throw new IllegalArgumentException("Account not found");
         }
+        if (createLimitOffer.getOfferExpiryTime().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Offer expiry time must be in the future");
+        }
 
-        if (createlimitOffer.limitType == LimitType.ACCOUNT_LIMIT && createlimitOffer.newLimit <= account.getAccountLimit()) {
+        if (createLimitOffer.getOfferExpiryTime().isBefore(createLimitOffer.getOfferActivationTime())) {
+            throw new IllegalArgumentException("Offer expiry time must be after offer activation time");
+        }
+
+        if (createLimitOffer.limitType == LimitType.ACCOUNT_LIMIT && createLimitOffer.newLimit <= account.getAccountLimit()) {
             throw new IllegalArgumentException("New account limit must be greater than current account limit");
-        } else if (createlimitOffer.limitType == LimitType.PER_TRANSACTION_LIMIT && createlimitOffer.newLimit <= account.getPerTransactionLimit()) {
+        } else if (createLimitOffer.limitType == LimitType.PER_TRANSACTION_LIMIT && createLimitOffer.newLimit <= account.getPerTransactionLimit()) {
             throw new IllegalArgumentException("New per transaction limit must be greater than current per transaction limit");
         }
+
         LimitOffer limitOffer = new LimitOffer();
-        limitOffer.setAccountId(createlimitOffer.accountId);
-        limitOffer.setLimitType(createlimitOffer.limitType);
-        limitOffer.setNewLimit(createlimitOffer.newLimit);
-        limitOffer.setOfferActivationTime(createlimitOffer.offerActivationTime);
-        limitOffer.setOfferExpiryTime(createlimitOffer.offerExpiryTime);
+        limitOffer.setAccountId(createLimitOffer.accountId);
+        limitOffer.setLimitType(createLimitOffer.limitType);
+        limitOffer.setNewLimit(createLimitOffer.newLimit);
+        limitOffer.setOfferActivationTime(createLimitOffer.offerActivationTime);
+        limitOffer.setOfferExpiryTime(createLimitOffer.offerExpiryTime);
         limitOffer.setStatus(OfferStatus.PENDING);
         return limitOfferRepository.save(limitOffer);
     }
@@ -54,14 +61,17 @@ public class LimitOfferService {
     @Transactional
     public LimitOffer updateLimitOfferStatus(int limitOfferId, OfferStatus newStatus) {
         LimitOffer limitOffer = limitOfferRepository.findByLimitOfferId(limitOfferId);
-
-        if (limitOffer != null && newStatus == OfferStatus.ACCEPTED) {
-            Account account = accountRepository.findByAccountId(limitOffer.getAccountId());
-
-            if (account != null) {
+        if(limitOffer == null)
+        {
+            throw new IllegalArgumentException("LimitOffer not found");
+        }
+        Account account = accountRepository.findByAccountId(limitOffer.getAccountId());
+        if (account == null ) {
+            throw new IllegalArgumentException("Account not found");
+        }
+        if (newStatus == OfferStatus.ACCEPTED) {
                 double newAccountLimit = limitOffer.getLimitType() == LimitType.ACCOUNT_LIMIT ? limitOffer.getNewLimit() : account.getAccountLimit();
                 double newPerTransactionLimit = limitOffer.getLimitType() == LimitType.PER_TRANSACTION_LIMIT ? limitOffer.getNewLimit() : account.getPerTransactionLimit();
-
                 account.setLastAccountLimit(account.getAccountLimit());
                 account.setLastPerTransactionLimit(account.getPerTransactionLimit());
                 account.setAccountLimit(newAccountLimit);
@@ -69,13 +79,21 @@ public class LimitOfferService {
                 accountRepository.save(account);
                 limitOffer.setStatus(OfferStatus.ACCEPTED);
                 return limitOfferRepository.save(limitOffer);
-            }
+
+        }
+        else if(newStatus == OfferStatus.REJECTED){
+            limitOffer.setStatus(OfferStatus.REJECTED);
+            return limitOfferRepository.save(limitOffer);
         }
         return null;
     }
 
 
-    public List<LimitOffer> getActiveLimitOffersForAccount(Long accountId) {
+    public List<LimitOffer> getActiveLimitOffersForAccount(int accountId) {
+        Account account = accountRepository.findByAccountId(accountId);
+        if (account == null ) {
+            throw new IllegalArgumentException("Account not found");
+        }
         List<LimitOffer> limitOfferForAccount = limitOfferRepository.findActiveLimitOffers(accountId, LocalDateTime.now());
         return limitOfferForAccount;
     }

@@ -23,28 +23,42 @@ public class LimitOfferController {
     }
 
     @PostMapping
-    public ResponseEntity<LimitOffer> createLimitOffer(@RequestBody CreateLimitOfferRequest limitOffer) {
-        LimitOffer createdLimitOffer = limitOfferService.createLimitOffer(limitOffer);
-        return ResponseEntity.ok(createdLimitOffer);
+    public ResponseEntity<?> createLimitOffer(@RequestBody CreateLimitOfferRequest limitOffer) {
+        try{
+            LimitOffer createdLimitOffer = limitOfferService.createLimitOffer(limitOffer);
+            return ResponseEntity.ok(createdLimitOffer);
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+
     }
     @GetMapping("/active/{accountId}")
-    public ResponseEntity<List<LimitOffer>> getActiveLimitOffersForAccount(@PathVariable Long accountId) {
-        List<LimitOffer> activeLimitOffers = limitOfferService.getActiveLimitOffersForAccount(accountId);
-        return ResponseEntity.ok(activeLimitOffers);
+    public ResponseEntity<?> getActiveLimitOffersForAccount(@PathVariable int accountId) {
+        try{
+            List<LimitOffer> activeLimitOffers = limitOfferService.getActiveLimitOffersForAccount(accountId);
+            return ResponseEntity.ok(activeLimitOffers);
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+
     }
 
     @PutMapping("/{limitOfferId}/status")
-    public ResponseEntity<LimitOffer> updateLimitOfferStatus(
+    public ResponseEntity<?> updateLimitOfferStatus(
             @PathVariable int  limitOfferId,
             @RequestBody Map<String, String> requestBody
     ) {
         String newStatusStr = requestBody.get("status");
         OfferStatus newStatus = OfferStatus.valueOf(newStatusStr);
-        LimitOffer updatedLimitOffer = limitOfferService.updateLimitOfferStatus(limitOfferId, newStatus);
-        if (updatedLimitOffer != null) {
+        try{
+            LimitOffer updatedLimitOffer = limitOfferService.updateLimitOfferStatus(limitOfferId, newStatus);
             return ResponseEntity.ok(updatedLimitOffer);
-        } else {
-            return ResponseEntity.notFound().build();
         }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+
     }
 }

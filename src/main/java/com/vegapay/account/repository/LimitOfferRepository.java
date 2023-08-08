@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface LimitOfferRepository extends JpaRepository<LimitOffer, Long> {
     @Query("SELECT lo FROM LimitOffer lo WHERE lo.accountId = :accountId AND lo.status = 'PENDING' AND lo.offerActivationTime <= :activeDate AND lo.offerExpiryTime >= :activeDate")
-    List<LimitOffer> findActiveLimitOffers(Long accountId, LocalDateTime activeDate);
+    List<LimitOffer> findActiveLimitOffers(int accountId, LocalDateTime activeDate);
 
     LimitOffer findByLimitOfferId(int limitOfferId);
 }

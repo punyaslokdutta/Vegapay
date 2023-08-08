@@ -1,6 +1,12 @@
 # Vegapay
 
-This API allows you to manage credit card limits and offers for customers.
+These APIs allows you to manage credit card limits and offers for customers.
+
+**Multiplicity**: One-to-One && Uni-directional Association
+- Each `LimitOffer` corresponds to a single `Account`.
+- Each `Account` can have multiple associated `LimitOffers`.
+- Given a `LimitOffer`, you can access the associated `Account`.
+- However, a direct reference from an `Account` to its associated `LimitOffers` might not be present.
 
 ## 1. Create Account
 

@@ -15,3 +15,13 @@ curl --location 'http://localhost:8080/v1/accounts' \
     "perTransactionLimit": 40000.0
 }'
 
+**Response:**
+
+```shell
+{
+    "accountLimit": 200000.0,
+    "perTransactionLimit": 40000.0
+}
+
+
+
